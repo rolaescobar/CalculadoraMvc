@@ -1,0 +1,78 @@
+﻿@model CalculadoraMvc.Models.Calculadora
+@{
+    ViewData["Title"] = "Calculadora";
+    string opTexto(string op) => op switch
+    {
+        "sumar" => "Suma",
+        "restar" => "Resta",
+        "multiplicar" => "Multiplicación",
+        "dividir" => "División",
+        _ => "Operación"
+    };
+}
+
+<h1 class="mb-3">Calculadora (MVC .NET 8)</h1>
+
+<form asp-action="Calcular" method="post" class="card p-3 shadow-sm">
+    @Html.AntiForgeryToken()
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label for="n1" class="form-label">Número 1</label>
+            <input type="number" step="any" class="form-control" id="n1" name="n1" value="@Model.Numero1" required />
+        </div>
+        <div class="col-md-4">
+            <label for="n2" class="form-label">Número 2</label>
+            <input type="number" step="any" class="form-control" id="n2" name="n2" value="@Model.Numero2" required />
+        </div>
+        <div class="col-md-4">
+            <label for="operacion" class="form-label">Operación</label>
+            <select class="form-select" id="operacion" name="operacion" required>
+                <option value="sumar">Suma (+)</option>
+                <option value="restar">Resta (-)</option>
+                <option value="multiplicar">Multiplicación (×)</option>
+                <option value="dividir">División (÷)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Calcular</button>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    @if (ViewBag.Resultado is not null)
+    {
+        <div class="alert alert-success mt-3">
+            <strong>Resultado (@opTexto((string)ViewBag.Operacion)):</strong>
+            <span>@ViewBag.Resultado</span>
+        </div>
+    }
+ 
+
+
+</form>
+
+<style>
+    /* Opcional: estilos simples si no usás Bootstrap */
+    .form-label {
+        font-weight: 600;
+    }
+
+    .btn {
+        padding: .5rem 1rem;
+    }
+
+    .card {
+        border-radius: .75rem;
+    }
+</style>
